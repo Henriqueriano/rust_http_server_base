@@ -1,21 +1,23 @@
 /* based on: https://doc.rust-lang.org/book/ch21-00-final-project-a-web-server.html; */
 use std::net::{TcpListener, TcpStream};
 use std::io::{Error, Read};
+
 fn main() -> ()
 {
-    let listener = TcpListener::bind("127.0.0.1:4545").unwrap();
+    let listener: TcpListener = TcpListener::bind("0.0.0.0:4343").unwrap();
+    clearscreen::clear().expect("Failed on clear!");
     println!("server_info: The rust socket listener in {:?}", listener);
     for stream in listener.incoming() 
     {
-        foo(stream);
+        print_when_listen(stream);
     }    
 }
-fn foo(stream: Result<TcpStream, Error>) -> () 
+fn print_when_listen(stream: Result<TcpStream, Error>) -> () 
 {   
     let mut stream_buffer: [u8;512] = [0;512]; //512 bytes max!
     stream.ok()
     .unwrap().read(&mut stream_buffer)
     .expect("Error wen read buffer!");
-    println!("{}", str::from_utf8(&stream_buffer).ok().unwrap().replace("\\0",""));
+    print!("{}", str::from_utf8(&stream_buffer).ok().unwrap().trim().replace("\\0",""));
 }
 
